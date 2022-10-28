@@ -9,8 +9,8 @@ public class Homework3 {
      * например 2? + ?5 = 69. Требуется восстановить выражение до верного равенства. Предложить хотя бы одно решение
      * или сообщить, что его нет.
      */
-    public List<List<Integer>> restoreExpression(String expression) {
-        List<List<Integer>> resultCombinations = new ArrayList<>();
+    public List<String> getExpressionVariants(String expression) {
+        List<String> exprVariants = new ArrayList<>();
         expression = expression.replaceAll(" ", "");
         char[] exprChars = expression.toCharArray();
         List<Integer> questionMarks = new ArrayList<>();
@@ -19,17 +19,19 @@ public class Homework3 {
                 questionMarks.add(i);
             }
         }
-        prepareCombinations(new ArrayList<>(), questionMarks.toArray().length);
-        String[] exprParts = expression.split("[/+=]");
-        int sum = Integer.parseInt(exprParts[2]);
+        prepareCombinations(new ArrayList<>(), questionMarks.size());
         for (List<Integer> comb : combinations) {
-            int term1 = Integer.parseInt(exprParts[0].replace("?", Integer.toString(comb.get(0))));
-            int term2 = Integer.parseInt(exprParts[1].replace("?", Integer.toString(comb.get(1))));
-            if (term1 + term2 == sum) {
-                resultCombinations.add(comb);
+            for (int qMarkIndex = 0; qMarkIndex < questionMarks.size(); qMarkIndex++) {
+                exprChars[questionMarks.get(qMarkIndex)] = Character.forDigit(comb.get(qMarkIndex), 10);
+            }
+            String exprVariant = new String(exprChars);
+            String[] exprParts = exprVariant.split("[/+=]");
+            int sum = Integer.parseInt(exprParts[2]);
+            if (Integer.parseInt(exprParts[0]) + Integer.parseInt(exprParts[1]) == sum) {
+                exprVariants.add(exprVariant);
             }
         }
-        return resultCombinations;
+        return exprVariants;
     }
 
     private void prepareCombinations(List<Integer> comb, int k) {
